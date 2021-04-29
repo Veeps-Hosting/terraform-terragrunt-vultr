@@ -14,17 +14,19 @@ provider "vultr" {}
 
 # Server
 resource "vultr_instance" "server" {
-  activation_email  = var.activation_email
-  backups           = var.backups
-  enable_ipv6       = var.enable_ipv6
-  firewall_group_id = data.vultr_firewall_group.group.id
-  hostname          = "${var.hostname}.${var.domain}"
-  label             = var.hostname
-  os_id             = var.os_id
-  plan              = var.plan
-  region            = var.region
-  script_id         = data.vultr_startup_script.script.id
-  ssh_key_ids       = [data.vultr_ssh_key.key.id]
+  activation_email       = var.activation_email
+  backups                = var.backups
+  enable_ipv6            = var.enable_ipv6
+  enable_private_network = tobool(try(var.enable_private_network, null))
+  firewall_group_id      = data.vultr_firewall_group.group.id
+  hostname               = "${var.hostname}.${var.domain}"
+  label                  = var.hostname
+  os_id                  = var.os_id
+  plan                   = var.plan
+  private_network_ids    = tostring(try(data.vultr_private_network.network.id, null))
+  region                 = var.region
+  script_id              = data.vultr_startup_script.script.id
+  ssh_key_ids            = [data.vultr_ssh_key.key.id]
 }
 
 # Forward IPv4 Hostname FQDN DNS Entry
@@ -71,5 +73,13 @@ data "vultr_firewall_group" "group" {
   filter {
     name   = "description"
     values = [var.firewall_group]
+  }
+}
+
+# Find the Private Network ID from the "nice" name
+data "vultr_private_network" "network" {
+  filter {
+    name   = "name"
+    values = [(try(var.private_network, null))]
   }
 }

@@ -9,16 +9,22 @@ variable "domain" {
 variable "enable_ipv6" {
   default = true
 }
+variable "enable_private_network" {
+  default = false
+}
 variable "firewall_group" {
   default = "web_ssh_ping"
 }
-variable "hostname" {}
+variable "hostname" {
+}
 variable "os_id" {
   description = "Ubuntu 20.04 LTS 64 Bit"
   default     = "387"
 }
 variable "plan" {
-  default = "vc2-1c-2gb"
+  default = "vc2-1c-1gb"
+}
+variable "private_network" {
 }
 variable "region" {
   default = "syd"
@@ -27,5 +33,4 @@ variable "startup_script" {
   default = "bootstrap"
 }
 variable "ssh_key" {
-  default = "grant"
 }
