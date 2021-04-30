@@ -23,7 +23,7 @@ resource "vultr_instance" "server" {
   label                  = var.hostname
   os_id                  = var.os_id
   plan                   = var.plan
-  private_network_ids    = [data.vultr_private_network.network[1].id]
+  private_network_ids    = [tostring(try(var.private_network_ids, null))]
   region                 = var.region
   script_id              = data.vultr_startup_script.script.id
   ssh_key_ids            = [data.vultr_ssh_key.key.id]

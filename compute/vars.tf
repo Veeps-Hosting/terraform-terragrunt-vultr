@@ -24,8 +24,7 @@ variable "os_id" {
 variable "plan" {
   default = "vc2-1c-1gb"
 }
-variable "private_network" {
-  default = ""
+variable "private_network_ids" {
 }
 variable "region" {
   default = "syd"
