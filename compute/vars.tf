@@ -25,6 +25,7 @@ variable "plan" {
   default = "vc2-1c-1gb"
 }
 variable "private_network" {
+  default = null
 }
 variable "region" {
   default = "syd"
