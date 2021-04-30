@@ -23,7 +23,7 @@ resource "vultr_instance" "server" {
   label                  = var.hostname
   os_id                  = var.os_id
   plan                   = var.plan
-  private_network_ids    = [tostring(try(data.vultr_private_network.network.id[count.index], null))]
+  private_network_ids    = [tostring(try(data.vultr_private_network.network.id, null))]
   region                 = var.region
   script_id              = data.vultr_startup_script.script.id
   ssh_key_ids            = [data.vultr_ssh_key.key.id]
@@ -78,9 +78,8 @@ data "vultr_firewall_group" "group" {
 
 # Find the Private Network ID from the "nice" name
 data "vultr_private_network" "network" {
-  count = "${var.enable_private_network == true ? 1 : 0 }"
   filter {
     name   = "description"
-    values = [(try(var.private_network, null))]
+    values = [var.private_network]
   }
 }
