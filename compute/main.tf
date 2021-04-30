@@ -80,6 +80,6 @@ data "vultr_firewall_group" "group" {
 data "vultr_private_network" "network" {
   filter {
     name   = "description"
-    values = [var.private_network]
+    values = [(try(var.private_network, null))]
   }
 }
