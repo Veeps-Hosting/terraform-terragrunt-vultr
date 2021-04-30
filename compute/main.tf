@@ -17,13 +17,13 @@ resource "vultr_instance" "server" {
   activation_email       = var.activation_email
   backups                = var.backups
   enable_ipv6            = var.enable_ipv6
-  enable_private_network = tobool(try(var.enable_private_network, null))
+  enable_private_network = var.enable_private_network
   firewall_group_id      = data.vultr_firewall_group.group.id
   hostname               = "${var.hostname}.${var.domain}"
   label                  = var.hostname
   os_id                  = var.os_id
   plan                   = var.plan
-  private_network_ids    = tostring(try(var.private_network_ids, null))
+  private_network_ids    = tostring(try(each.var.private_network_ids, null))
   region                 = var.region
   script_id              = data.vultr_startup_script.script.id
   ssh_key_ids            = [data.vultr_ssh_key.key.id]
