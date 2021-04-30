@@ -79,7 +79,7 @@ data "vultr_firewall_group" "group" {
 # Find the Private Network ID from the "nice" name
 data "vultr_private_network" "network" {
   filter {
-    name   = "name"
+    name   = "description"
     values = [(try(var.private_network, null))]
   }
 }
