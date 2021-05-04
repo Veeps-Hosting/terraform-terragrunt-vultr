@@ -19,7 +19,7 @@ variable "hostname" {
 }
 variable "os_id" {
   description = "Ubuntu 20.04 LTS 64 Bit"
-  default     = "387"
+  default     = "270"
 }
 variable "plan" {
   default = "vc2-1c-1gb"
