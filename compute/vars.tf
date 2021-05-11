@@ -5,7 +5,7 @@ variable "backups" {
   default = "enabled"
 }
 variable "backups_schedule" {
-  type = "map"
+  type = map(string)
   default = {
     type = "daily_alt_odd"
     hour = "22"
