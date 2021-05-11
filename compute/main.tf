@@ -16,7 +16,12 @@ provider "vultr" {}
 resource "vultr_instance" "server" {
   activation_email       = var.activation_email
   backups                = var.backups
-  backups_schedule       { "${var.backups_schedule}"}
+  backups_schedule {
+    dom  = tostring(try(var.backups_schedule_dom, null))
+    dow  = tostring(try(var.backups_schedule_dow, null))
+    hour = var.backups_schedule_hour
+    type = var.backups_schedule_type
+  }
   enable_ipv6            = var.enable_ipv6
   firewall_group_id      = data.vultr_firewall_group.group.id
   hostname               = "${var.hostname}.${var.domain}"

@@ -4,12 +4,15 @@ variable "activation_email" {
 variable "backups" {
   default = "enabled"
 }
-variable "backups_schedule" {
-  type = map(string)
-  default = {
-    type = "daily_alt_odd"
-    hour = "22"
-  }
+variable "backups_schedule_dom" {
+}
+variable "backups_schedule_dow" {
+}
+variable "backups_schedule_hour" {
+  default = 22
+}
+variable "backups_schedule_type" {
+  default = "daily_alt_odd"
 }
 variable "domain" {
 }
