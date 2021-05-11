@@ -4,10 +4,6 @@ variable "activation_email" {
 variable "backups" {
   default = "enabled"
 }
-variable "backups_schedule_dom" {
-}
-variable "backups_schedule_dow" {
-}
 variable "backups_schedule_hour" {
   default = 22
 }

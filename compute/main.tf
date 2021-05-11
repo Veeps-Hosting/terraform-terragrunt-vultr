@@ -17,8 +17,6 @@ resource "vultr_instance" "server" {
   activation_email       = var.activation_email
   backups                = var.backups
   backups_schedule {
-    dom  = tostring(try(var.backups_schedule_dom, null))
-    dow  = tostring(try(var.backups_schedule_dow, null))
     hour = var.backups_schedule_hour
     type = var.backups_schedule_type
   }
