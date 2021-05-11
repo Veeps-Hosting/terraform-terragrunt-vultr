@@ -5,8 +5,11 @@ variable "backups" {
   default = "enabled"
 }
 variable "backups_schedule" {
-  type = "daily_alt_odd"
-  hour = "22"
+  type = "map"
+  default = {
+    type = "daily_alt_odd"
+    hour = "22"
+  }
 }
 variable "domain" {
 }
