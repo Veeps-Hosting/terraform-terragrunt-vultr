@@ -4,6 +4,13 @@ variable "activation_email" {
 variable "backups" {
   default = "enabled"
 }
+variable "backups" {
+  default = "enabled"
+}
+variable "backups_schedule" {
+  type = "daily_alt_odd"
+  hour = "22"
+}
 variable "domain" {
 }
 variable "enable_ipv6" {
