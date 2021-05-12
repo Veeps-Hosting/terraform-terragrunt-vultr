@@ -78,11 +78,3 @@ data "vultr_firewall_group" "group" {
     values = [var.firewall_group]
   }
 }
-
-## Find the ID of an existing Private Network
-#data "vultr_private_network" "network" {
-#  filter {
-#    name   = "description"
-#    values = [try(var.private_network, null)]
-#  }
-#}
