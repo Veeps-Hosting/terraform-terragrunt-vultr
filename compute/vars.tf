@@ -32,6 +32,7 @@ variable "plan" {
 }
 variable "private_network_id" {
   default = []
+  type    = list
 }
 variable "region" {
   default = "syd"
