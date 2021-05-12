@@ -70,3 +70,11 @@ data "vultr_startup_script" "script" {
     values = [var.startup_script]
   }
 }
+
+# Find the ID of an existing Firewall Group
+data "vultr_firewall_group" "group" {
+  filter {
+    name   = "description"
+    values = [var.firewall_group]
+  }
+}
