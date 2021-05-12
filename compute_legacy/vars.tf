@@ -4,13 +4,16 @@ variable "activation_email" {
 variable "backups" {
   default = "enabled"
 }
+variable "backups_schedule_hour" {
+  default = 22
+}
+variable "backups_schedule_type" {
+  default = "daily_alt_odd"
+}
 variable "domain" {
 }
 variable "enable_ipv6" {
   default = true
-}
-variable "enable_private_network" {
-  default = false
 }
 variable "firewall_group" {
   default = "web_ssh_ping"
