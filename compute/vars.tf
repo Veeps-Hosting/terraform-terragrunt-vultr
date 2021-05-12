@@ -31,7 +31,7 @@ variable "plan" {
   default = "vc2-1c-1gb"
 }
 variable "private_network_id" {
-  default = []
+  default = ""
 }
 variable "region" {
   default = "syd"
