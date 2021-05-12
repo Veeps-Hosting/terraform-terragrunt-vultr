@@ -26,7 +26,7 @@ resource "vultr_instance" "server" {
   label                  = var.hostname
   os_id                  = var.os_id
   plan                   = var.plan
-  private_network_ids    = try(var.private_network_ids, [])
+  private_network_ids    = try(data.vultr_private_network.network.id, null)
   region                 = var.region
   script_id              = data.vultr_startup_script.script.id
   ssh_key_ids            = [data.vultr_ssh_key.key.id]
@@ -76,5 +76,13 @@ data "vultr_firewall_group" "group" {
   filter {
     name   = "description"
     values = [var.firewall_group]
+  }
+}
+
+# Find the ID of an existing Private Network
+data "vultr_private_network" "network" {
+  filter {
+    name   = "description"
+    values = [try(var.private_network, null)]
   }
 }
