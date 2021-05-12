@@ -26,7 +26,7 @@ resource "vultr_instance" "server" {
   label                  = var.hostname
   os_id                  = var.os_id
   plan                   = var.plan
-  private_network_ids    = ["7158e1f4-f70f-4876-b40e-b34c2ae9dc70"]
+  private_network_ids    = var.private_network_id
   region                 = var.region
   script_id              = data.vultr_startup_script.script.id
   ssh_key_ids            = [data.vultr_ssh_key.key.id]

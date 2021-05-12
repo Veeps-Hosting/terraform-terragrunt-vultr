@@ -30,7 +30,7 @@ variable "os_id" {
 variable "plan" {
   default = "vc2-1c-1gb"
 }
-variable "vultr_private_network_id" {
+variable "private_network_id" {
   default = []
 }
 variable "region" {
