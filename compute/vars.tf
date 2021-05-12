@@ -31,7 +31,7 @@ variable "plan" {
   default = "vc2-1c-1gb"
 }
 variable "vultr_private_network_id" {
-  default = null
+  default = []
 }
 variable "region" {
   default = "syd"
