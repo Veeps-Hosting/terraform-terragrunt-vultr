@@ -2,11 +2,11 @@
 # CONFIGURE VULTR DNS ENTRY
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 terraform {
-  backend "s3" {}
+  backend var.backend_remotestate {}
   required_providers {
     vultr = {
       source = "vultr/vultr"
-      version = "2.3.0"
+      version = "2.8.1"
     }
   }
 }
