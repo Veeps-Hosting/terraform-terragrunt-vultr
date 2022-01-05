@@ -2,7 +2,7 @@
 # CONFIGURE VULTR DNS ENTRY
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 terraform {
-  backend local {}
+  backend "local" {}
   required_providers {
     vultr = {
       source  = "vultr/vultr"
