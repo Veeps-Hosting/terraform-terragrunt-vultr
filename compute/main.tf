@@ -6,7 +6,7 @@ terraform {
   required_providers {
     vultr = {
       source = "vultr/vultr"
-      version = "2.3.0"
+      version = "2.3.3"
     }
   }
 }
@@ -68,5 +68,13 @@ data "vultr_startup_script" "script" {
   filter {
     name   = "name"
     values = [var.startup_script]
+  }
+}
+
+# Find the ID of an existing Firewall Group
+data "vultr_firewall_group" "group" {
+  filter {
+    name   = "description"
+    values = [var.firewall_group]
   }
 }
