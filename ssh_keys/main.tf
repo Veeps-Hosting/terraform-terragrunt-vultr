@@ -2,7 +2,7 @@
 # CONFIGURE VULTR DNS ENTRY
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 terraform {
-  backend var.backend_remotestate {}
+  backend "${var.backend_remotestate}" {}
   required_providers {
     vultr = {
       source  = "vultr/vultr"
