@@ -5,12 +5,8 @@ terraform {
   backend var.backend_remotestate {}
   required_providers {
     vultr = {
-      source = "vultr/vultr"
-<<<<<<< HEAD
+      source  = "vultr/vultr"
       version = "2.8.1"
-=======
-      version = "2.3.3"
->>>>>>> 8095ca569d75fab994e729d9c9f826ddb575f854
     }
   }
 }
