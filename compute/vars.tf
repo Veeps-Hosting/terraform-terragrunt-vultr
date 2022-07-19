@@ -10,6 +10,9 @@ variable "backups_schedule_hour" {
 variable "backups_schedule_type" {
   default = "daily_alt_odd"
 }
+variable "ddos_protection" {
+  default = false
+}
 variable "domain" {
 }
 variable "enable_ipv6" {

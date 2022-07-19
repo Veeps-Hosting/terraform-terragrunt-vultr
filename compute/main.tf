@@ -6,7 +6,7 @@ terraform {
   required_providers {
     vultr = {
       source = "vultr/vultr"
-      version = "2.3.3"
+      version = "2.11.3"
     }
   }
 }
@@ -20,6 +20,7 @@ resource "vultr_instance" "server" {
     hour = var.backups_schedule_hour
     type = var.backups_schedule_type
   }
+  ddos_protection        = var.ddos_protection
   enable_ipv6            = var.enable_ipv6
   firewall_group_id      = data.vultr_firewall_group.group.id
   hostname               = "${var.hostname}.${var.domain}"
