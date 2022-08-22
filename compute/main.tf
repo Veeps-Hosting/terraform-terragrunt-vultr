@@ -6,7 +6,7 @@ terraform {
   required_providers {
     vultr = {
       source = "vultr/vultr"
-      version = "2.11.3"
+      version = "2.11.4"
     }
   }
 }
@@ -27,10 +27,10 @@ resource "vultr_instance" "server" {
   label                  = var.hostname
   os_id                  = var.os_id
   plan                   = var.plan
-  private_network_ids    = var.private_network_id
   region                 = var.region
   script_id              = data.vultr_startup_script.script.id
   ssh_key_ids            = [data.vultr_ssh_key.key.id]
+  vpc_ids                = var.vpc_ids
 }
 
 # Forward IPv4 Hostname FQDN DNS Entry

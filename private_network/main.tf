@@ -6,13 +6,13 @@ terraform {
   required_providers {
     vultr = {
       source = "vultr/vultr"
-      version = "2.11.3"
+      version = "2.11.4"
     }
   }
 }
 provider "vultr" {}
 
-resource "vultr_private_network" "private_network" {
+resource "vultr_vpc" "private_network" {
   description    = var.description
   region         = var.region
   v4_subnet      = var.subnet
