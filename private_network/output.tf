@@ -1,3 +1,3 @@
 output "private_network_ids" {
-  value = vultr_private_network.private_network.id
+  value = vultr_private_network.vultr_vpc.id
 }
