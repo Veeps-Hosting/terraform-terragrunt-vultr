@@ -14,6 +14,7 @@ provider "vultr" {}
 
 resource "vultr_block_storage" "block_storage" {
   attached_to_instance = data.vultr_instance.server.id
+  block_type           = var.block_type
   label                = var.label
   live                 = var.live
   region               = var.region
