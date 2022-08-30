@@ -29,22 +29,22 @@ resource "vultr_instance" "bare_metal_server" {
 resource "vultr_dns_record" "hostname_dns_entry" {
   domain = var.domain
   name   = var.hostname
-  data   = vultr_instance.server.main_ip
+  data   = vultr_instance.bare_metal_server.main_ip
   type   = "A"
   ttl    = 120
 }
 
 # Reverse IPv4 Hostname FQDN PTR DNS Entry
 resource "vultr_reverse_ipv4" "ipv4_ptr_entry" {
-  instance_id = vultr_instance.server.id
-  ip          = vultr_instance.server.main_ip
+  instance_id = vultr_instance.bare_metal_server.id
+  ip          = vultr_instance.bare_metal_server.main_ip
   reverse     = "${var.hostname}.${var.domain}"
 }
 
 # Reverse IPv6 Hostname FQDN PTR DNS Entry
 resource "vultr_reverse_ipv6" "ipv6_ptr_entry" {
-  instance_id = vultr_instance.server.id
-  ip          = vultr_instance.server.v6_main_ip
+  instance_id = vultr_instance.bare_metal_server.id
+  ip          = vultr_instance.bare_metal_server.v6_main_ip
   reverse     = "${var.hostname}.${var.domain}"
 }
 
