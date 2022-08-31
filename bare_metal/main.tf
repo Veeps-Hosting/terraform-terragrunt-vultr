@@ -13,7 +13,7 @@ terraform {
 provider "vultr" {}
 
 # Server
-resource "vultr_bare_metal_server" "bare_metal_server" {
+resource "vultr_bare_metal_server" "server" {
   activation_email = var.activation_email
   enable_ipv6      = var.enable_ipv6
   hostname         = "${var.hostname}.${var.domain}"
@@ -29,22 +29,22 @@ resource "vultr_bare_metal_server" "bare_metal_server" {
 resource "vultr_dns_record" "hostname_dns_entry" {
   domain = var.domain
   name   = var.hostname
-  data   = vultr_instance.bare_metal_server.main_ip
+  data   = bare_metal_server.server.main_ip
   type   = "A"
   ttl    = 120
 }
 
 # Reverse IPv4 Hostname FQDN PTR DNS Entry
 resource "vultr_reverse_ipv4" "ipv4_ptr_entry" {
-  instance_id = vultr_instance.bare_metal_server.id
-  ip          = vultr_instance.bare_metal_server.main_ip
+  instance_id = bare_metal_server.server.id
+  ip          = bare_metal_server.server.main_ip
   reverse     = "${var.hostname}.${var.domain}"
 }
 
 # Reverse IPv6 Hostname FQDN PTR DNS Entry
 resource "vultr_reverse_ipv6" "ipv6_ptr_entry" {
-  instance_id = vultr_instance.bare_metal_server.id
-  ip          = vultr_instance.bare_metal_server.v6_main_ip
+  instance_id = bare_metal_server.server.id
+  ip          = bare_metal_server.server.v6_main_ip
   reverse     = "${var.hostname}.${var.domain}"
 }
 
