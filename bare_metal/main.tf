@@ -13,7 +13,7 @@ terraform {
 provider "vultr" {}
 
 # Server
-resource "vultr_instance" "bare_metal_server" {
+resource "vultr_bare_metal_server" "bare_metal_server" {
   activation_email = var.activation_email
   enable_ipv6      = var.enable_ipv6
   hostname         = "${var.hostname}.${var.domain}"
