@@ -38,7 +38,7 @@ variable "region" {
   default = "syd"
 }
 variable "startup_script" {
-  default = "bootstrap"
+  default = "bootstrap_netplan"
 }
 variable "ssh_key" {
 }
