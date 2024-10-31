@@ -24,11 +24,11 @@ variable "firewall_group" {
 variable "hostname" {
 }
 variable "os_id" {
-  description = "Ubuntu 22.04 LTS 64 Bit"
-  default     = "1743"
+  description = "Ubuntu 24.04 LTS 64 Bit"
+  default     = "2284"
 }
 variable "plan" {
-  default = "vc2-1c-1gb"
+  default = "vc2-1c-2gb"
 }
 variable "vpc_ids" {
   default = []
@@ -38,7 +38,7 @@ variable "region" {
   default = "syd"
 }
 variable "startup_script" {
-  default = "bootstrap"
+  default = "client_v1"
 }
 variable "ssh_key" {
 }
