@@ -42,11 +42,10 @@ variable "startup_script" {
 }
 variable "ssh_key" {
 }
-variable "reserved_ipv4" {
+variable "reserved_ip" {
   default = false
   type    = bool
 }
-variable "reserved_ipv6" {
-  default = false
-  type    = bool
+variable "reserved_ip_type" {
+  default = "v4"
 }

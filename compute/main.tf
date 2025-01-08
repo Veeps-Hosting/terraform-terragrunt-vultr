@@ -56,23 +56,14 @@ resource "vultr_reverse_ipv6" "ipv6_ptr_entry" {
   reverse     = "${var.hostname}.${var.domain}"
 }
 
-# Optionally, add a Reserved IPv4
-resource "vultr_reserved_ip" "reserved_ipv4" {
-    count       = var.reserved_ipv4 ? 1 : 0
-    label       = "${var.hostname}-reserved-ipv4"
+# Optionally, add a Reserved IP
+resource "vultr_reserved_ip" "reserved_ip" {
+    count       = var.reserved_ip ? 1 : 0
+    label       = "${var.hostname}-reserved-ip"
     region      = var.region
-    ip_type     = "v4"
+    ip_type     = var.reserved_ip_type
     instance_id = vultr_instance.server.id
 }
-
-## Optionally, add a Reserved IPv6
-#resource "vultr_reserved_ip" "reserved_ipv4" {
-#    count       = var.reserved_ipv6 ? 1 : 0
-#    label       = "${var.hostname}-reserved-ipv6"
-#    region      = var.region
-#    ip_type     = "v6"
-#    instance_id = vultr_instance.server.id
-#}
 
 # Find the ID of an existing SSH key.
 data "vultr_ssh_key" "key" {
