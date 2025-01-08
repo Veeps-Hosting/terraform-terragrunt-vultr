@@ -62,7 +62,7 @@ resource "vultr_reserved_ip" "reserved_ip" {
     label       = "${var.hostname}-reserved-ip"
     region      = var.region
     ip_type     = var.reserved_ip_type
-    instance_id = vultr_instance.server.id
+    instance_id = vultr_instance.server
 }
 
 # Find the ID of an existing SSH key.
