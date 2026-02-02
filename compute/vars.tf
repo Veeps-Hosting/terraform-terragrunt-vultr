@@ -38,7 +38,7 @@ variable "region" {
   default = "syd"
 }
 variable "startup_script" {
-  default = "client_v1"
+  default = "openvox_client"
 }
 variable "ssh_key" {
 }
