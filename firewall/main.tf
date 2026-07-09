@@ -33,4 +33,10 @@ resource "vultr_firewall_rule" "fwrule" {
   subnet_size       = tonumber(try(each.value.subnet_size, 0))
   port              = tostring(try(each.value.port, null))
   notes             = tostring(try(each.value.notes, null))
+
+  # Vultr stores `source` as a computed CIDR but only accepts ""/"cloudflare"
+  # as input; since it is ForceNew that mismatch replaces every rule. Ignore it.
+  lifecycle {
+    ignore_changes = [source]
+  }
 }
