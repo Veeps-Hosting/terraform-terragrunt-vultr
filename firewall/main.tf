@@ -33,4 +33,12 @@ resource "vultr_firewall_rule" "fwrule" {
   subnet_size       = tonumber(try(each.value.subnet_size, 0))
   port              = tostring(try(each.value.port, null))
   notes             = tostring(try(each.value.notes, null))
+
+  # The Vultr provider stores `source` as a computed CIDR (e.g. "0.0.0.0/0")
+  # derived from subnet/subnet_size, but only accepts "" or "cloudflare" as
+  # input. Because `source` is ForceNew, that mismatch makes every plan want to
+  # destroy/recreate existing rules. Ignore drift on it so rules stay in place.
+  lifecycle {
+    ignore_changes = [source]
+  }
 }
