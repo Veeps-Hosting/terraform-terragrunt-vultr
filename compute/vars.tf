@@ -24,8 +24,8 @@ variable "firewall_group" {
 variable "hostname" {
 }
 variable "os_id" {
-  description = "Ubuntu 24.04 LTS 64 Bit"
-  default     = "2284"
+  description = "Ubuntu 26.04 LTS 64 Bit"
+  default     = "2760"
 }
 variable "plan" {
   default = "vc2-1c-2gb"
