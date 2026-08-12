@@ -6,6 +6,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 terraform {
   backend "s3" {}
+  required_version = ">= 1.12.0"
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"

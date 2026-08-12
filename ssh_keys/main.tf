@@ -3,10 +3,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 terraform {
   backend "s3" {}
+  required_version = ">= 1.12.0"
   required_providers {
     vultr = {
       source = "vultr/vultr"
-      version = "2.19.0"
+      version = "~> 2.32"
     }
   }
 }
