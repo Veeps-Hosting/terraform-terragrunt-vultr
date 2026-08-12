@@ -29,8 +29,8 @@ resource "vultr_instance" "server" {
   os_id                  = var.os_id
   plan                   = var.plan
   region                 = var.region
-  script_id              = data.vultr_startup_script.script.id
-  ssh_key_ids            = [data.vultr_ssh_key.key.id]
+  script_id              = var.adopt_existing ? null : data.vultr_startup_script.script.id
+  ssh_key_ids            = var.adopt_existing ? null : [data.vultr_ssh_key.key.id]
   vpc_ids                = var.vpc_ids
 }
 

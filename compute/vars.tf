@@ -49,3 +49,13 @@ variable "reserved_ip" {
 variable "reserved_ip_type" {
   default = "v4"
 }
+variable "adopt_existing" {
+  # Set true for instances that were created outside this module - in practice
+  # ones migrated off compute_legacy. Those instances have no ssh key and no
+  # startup script attached, and both ssh_key_ids and script_id are ForceNew,
+  # so managing them would destroy and rebuild the server. Setting this leaves
+  # both unmanaged, which lets the module adopt the instance with no diff.
+  # It does not detach anything: the attributes are unmanaged, not emptied.
+  default = false
+  type    = bool
+}
