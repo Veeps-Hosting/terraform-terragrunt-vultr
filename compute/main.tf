@@ -62,12 +62,42 @@ resource "vultr_reverse_ipv6" "ipv6_ptr_entry" {
   reverse     = "${var.hostname}.${var.domain}"
 }
 
-# Optionally, add a Reserved IP
+# Optionally, a reserved IPv4 used as the instance's MAIN IP.
+#
+# Deliberately carries no instance_id: the attachment is made by the instance
+# itself via reserved_ip_id at create time, which is the only way Vultr will
+# make a reserved address the main IP. Setting instance_id here instead would
+# add the address as a secondary one that nothing points at.
 resource "vultr_reserved_ip" "reserved_ip" {
     count   = var.reserved_ip ? 1 : 0
     label   = var.reserved_ip_label != "" ? var.reserved_ip_label : "${var.hostname}-reserved-ip"
     region  = var.region
     ip_type = var.reserved_ip_type
+
+    lifecycle {
+      prevent_destroy = true
+    }
+}
+
+# Optionally, a reserved IPv6 /64 so the instance's IPv6 allocation survives a
+# rebuild.
+#
+# This one is the mirror image of the v4 resource above. InstanceCreateReq has
+# only reserved_ipv4, so a reserved /64 cannot be a main IP; attaching is the
+# only mode Vultr offers, and the attachment therefore lives here. That is also
+# what re-attaches the subnet after the instance is replaced.
+#
+# The instance keeps its own RA-assigned /64 as v6_main_ip and the reserved one
+# arrives as a secondary_ip, so the IPv6 PTR above still follows the ephemeral
+# address. The guest OS does NOT configure the reserved subnet by itself - the
+# router only advertises the ephemeral prefix - so a static address out of this
+# /64 has to be added to netplan for anything to use it.
+resource "vultr_reserved_ip" "reserved_ipv6" {
+    count       = var.reserved_ipv6 ? 1 : 0
+    label       = var.reserved_ipv6_label != "" ? var.reserved_ipv6_label : "${var.hostname}-reserved-ipv6"
+    region      = var.region
+    ip_type     = "v6"
+    instance_id = vultr_instance.server.id
 
     lifecycle {
       prevent_destroy = true

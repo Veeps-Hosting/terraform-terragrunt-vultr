@@ -57,6 +57,18 @@ variable "reserved_ip_label" {
   default = ""
   type    = string
 }
+variable "reserved_ipv6" {
+  # Reserve the instance's IPv6 /64 so the allocation survives a rebuild. This
+  # is NOT the v6 equivalent of reserved_ip: the instance create API has no
+  # reserved_ipv6 field, so the subnet attaches as a secondary and the guest
+  # OS needs a static address out of it in netplan before anything uses it.
+  default = false
+  type    = bool
+}
+variable "reserved_ipv6_label" {
+  default = ""
+  type    = string
+}
 variable "adopt_existing" {
   # Set true for instances that were created outside this module - in practice
   # ones migrated off compute_legacy. Those instances have no ssh key and no
