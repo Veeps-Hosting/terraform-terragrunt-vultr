@@ -29,13 +29,49 @@ resource "vultr_instance" "server" {
   os_id                  = var.os_id
   plan                   = var.plan
   region                 = var.region
-  reserved_ip_id         = var.reserved_ip ? vultr_reserved_ip.reserved_ip[0].id : null
+  reserved_ip_id         = local.reserved_ip_id
   script_id              = var.adopt_existing ? null : data.vultr_startup_script.script.id
   ssh_key_ids            = var.adopt_existing ? null : [data.vultr_ssh_key.key.id]
   vpc_ids                = var.vpc_ids
 
   lifecycle {
     ignore_changes = [reserved_ip_id]
+
+    precondition {
+      condition     = !(var.reserved_ip && var.reserved_ip_existing != "")
+      error_message = "Set reserved_ip to make a new reserved IP, or reserved_ip_existing to use one that already exists. Not both."
+    }
+  }
+}
+
+# Which reserved IPv4 the instance boots on, if any.
+#
+# reserved_ip makes a new one for this server. reserved_ip_existing points at
+# one that already exists, found by label - used when an existing server's
+# address was converted out of band, and when a replacement server inherits the
+# address of a decommissioned one.
+#
+# Vultr only accepts this in the instance CREATE call, so it decides the main IP
+# of a server being built and can never move the main IP of a server already
+# running. A replacement therefore has to be built AFTER the server it replaces
+# is gone, or the lookup finds an address still attached to the old instance.
+locals {
+  reserved_ip_id = (
+    var.reserved_ip ? vultr_reserved_ip.reserved_ip[0].id :
+    var.reserved_ip_existing != "" ? data.vultr_reserved_ip.existing[0].id :
+    null
+  )
+}
+
+# An existing reserved IP, looked up by label the same way this module already
+# looks up the ssh key, startup script and firewall group. Nothing about it is
+# managed here: it is not in this leaf's state, so no apply can duplicate it and
+# no destroy can delete it.
+data "vultr_reserved_ip" "existing" {
+  count = var.reserved_ip_existing != "" ? 1 : 0
+  filter {
+    name   = "label"
+    values = [var.reserved_ip_existing]
   }
 }
 

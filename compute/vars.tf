@@ -57,6 +57,14 @@ variable "reserved_ip_label" {
   default = ""
   type    = string
 }
+variable "reserved_ip_existing" {
+  # Label of a reserved IP that already exists. The instance boots on it.
+  # Use for a server whose address was converted out of band, and for a
+  # replacement server inheriting the address of a decommissioned one. Mutually
+  # exclusive with reserved_ip.
+  default = ""
+  type    = string
+}
 variable "reserved_ipv6" {
   # Reserve the instance's IPv6 /64 so the allocation survives a rebuild. This
   # is NOT the v6 equivalent of reserved_ip: the instance create API has no
