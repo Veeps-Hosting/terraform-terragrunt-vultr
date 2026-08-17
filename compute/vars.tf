@@ -48,6 +48,14 @@ variable "reserved_ip" {
 }
 variable "reserved_ip_type" {
   default = "v4"
+  validation {
+    condition     = var.reserved_ip_type == "v4"
+    error_message = "Only v4 reserved IPs are supported: the instance reserved_ip_id create field is ReservedIPv4."
+  }
+}
+variable "reserved_ip_label" {
+  default = ""
+  type    = string
 }
 variable "adopt_existing" {
   # Set true for instances that were created outside this module - in practice

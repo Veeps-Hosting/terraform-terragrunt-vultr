@@ -29,9 +29,14 @@ resource "vultr_instance" "server" {
   os_id                  = var.os_id
   plan                   = var.plan
   region                 = var.region
+  reserved_ip_id         = var.reserved_ip ? vultr_reserved_ip.reserved_ip[0].id : null
   script_id              = var.adopt_existing ? null : data.vultr_startup_script.script.id
   ssh_key_ids            = var.adopt_existing ? null : [data.vultr_ssh_key.key.id]
   vpc_ids                = var.vpc_ids
+
+  lifecycle {
+    ignore_changes = [reserved_ip_id]
+  }
 }
 
 # Forward IPv4 Hostname FQDN DNS Entry
@@ -59,11 +64,14 @@ resource "vultr_reverse_ipv6" "ipv6_ptr_entry" {
 
 # Optionally, add a Reserved IP
 resource "vultr_reserved_ip" "reserved_ip" {
-    count       = var.reserved_ip ? 1 : 0
-    label       = "${var.hostname}-reserved-ip"
-    region      = var.region
-    ip_type     = var.reserved_ip_type
-    instance_id = vultr_instance.server.id
+    count   = var.reserved_ip ? 1 : 0
+    label   = var.reserved_ip_label != "" ? var.reserved_ip_label : "${var.hostname}-reserved-ip"
+    region  = var.region
+    ip_type = var.reserved_ip_type
+
+    lifecycle {
+      prevent_destroy = true
+    }
 }
 
 # Find the ID of an existing SSH key.
