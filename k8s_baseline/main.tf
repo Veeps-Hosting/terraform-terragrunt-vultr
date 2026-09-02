@@ -141,17 +141,19 @@ locals {
       }]
       service = {
         type = "LoadBalancer"
-        # Cluster, not Local: the Vultr LB health-checks every node, and with
-        # Local a node without an ingress pod fails the check and drops out of
-        # the LB. The price is a kube-proxy SNAT when the packet is forwarded to
-        # a pod on another node, so the source nginx sees on the TCP connection
-        # is the node's VPC address - which is why proxy-real-ip-cidr below
-        # carries the VPC CIDR (the leaves pass it from the vke vpc_cidr output)
-        # and not the LB's addresses. The client address itself still arrives
-        # intact in the PROXY header. The first-apply whitelist test in the
-        # README (admin console 403 from off-list, 200 from on-list) is what
-        # proves the chain end to end.
-        externalTrafficPolicy = "Cluster"
+        # Local, not Cluster (changed 5.4 after the first prod apply): with
+        # Cluster, a connection the LB lands on a node WITHOUT a local ingress
+        # pod is forwarded by kube-proxy and SNAT'd to that node's PUBLIC
+        # address (Calico routes pod traffic between nodes over the public
+        # interface on VKE), so nginx sees a source outside proxy-real-ip-cidr,
+        # distrusts the PROXY header and the admin/mgmt whitelists deny a
+        # whitelisted client roughly one request in three. Local never
+        # forwards: a node with no local pod simply fails the LB's TCP health
+        # check (that is the desired behaviour), and the connection nginx sees
+        # comes straight from the LB's VPC address, which is inside
+        # proxy-real-ip-cidr. One ingress pod per worker (ingress_replicas =
+        # node count, topologySpread above) keeps every node in the LB.
+        externalTrafficPolicy = "Local"
         # Vultr CCM (vultr-cloud-controller-manager docs/load-balancers.md).
         annotations = {
           # TCP passthrough: TLS terminates in ingress-nginx with cert-manager

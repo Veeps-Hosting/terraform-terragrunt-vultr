@@ -39,7 +39,9 @@ variable "ingress_nginx_chart_version" {
   default = "4.15.1"
 }
 variable "ingress_replicas" {
-  default = 2
+  # One per worker node: externalTrafficPolicy is Local, so a node without an
+  # ingress pod drops out of the LB (see main.tf). Match node_quantity.
+  default = 3
   type    = number
   validation {
     condition     = var.ingress_replicas >= 1
