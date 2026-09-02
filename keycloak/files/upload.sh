@@ -43,7 +43,9 @@ fi
 if [ -d "${BACKUP_DIR}/realms" ]; then
   ARCHIVE="${BACKUP_DIR}/${PREFIX}-realms-${STAMP}.tgz"
   echo "packing ${BACKUP_DIR}/realms -> ${ARCHIVE}"
-  ( cd "${BACKUP_DIR}" && python3 -m tarfile -c "${ARCHIVE}" realms )
+  # amazon/aws-cli ships python as "python" (no python3 symlink) and no tar.
+  PY="$(command -v python3 || command -v python)" || { echo "no python in image; cannot pack realms" >&2; exit 1; }
+  ( cd "${BACKUP_DIR}" && "${PY}" -m tarfile -c "${ARCHIVE}" realms )
   rm -rf "${BACKUP_DIR}/realms"
 fi
 

@@ -94,6 +94,28 @@ variable "acme_email" {
     error_message = "acme_email must be set; Let's Encrypt expiry notices go there."
   }
 }
+# --- ACME DNS-01 via Route53 (aws-tf-modules-veeps cert-manager-route53 leaf) ---
+variable "dns01_route53_access_key_id" {
+  # IAM access key id of the cert-manager DNS-01 user. Empty = HTTP-01 only.
+  default = ""
+  type    = string
+}
+variable "dns01_route53_secret_access_key" {
+  default   = ""
+  type      = string
+  sensitive = true
+}
+variable "dns01_route53_region" {
+  # Route53 is global; this only picks the API endpoint.
+  default = "ap-southeast-2"
+  type    = string
+}
+variable "dns01_zones" {
+  # DNS zones the Route53 solver is allowed for (ClusterIssuer selector.dnsZones),
+  # e.g. ["staging.webqem.net"]. Must be zones the IAM policy covers.
+  default = []
+  type    = list(string)
+}
 variable "acme_self_check_hosts" {
   # Hostnames cert-manager will certify through this ingress (the keycloak
   # leaf's hostname + extra_hostnames). Each is aliased to the ingress-nginx

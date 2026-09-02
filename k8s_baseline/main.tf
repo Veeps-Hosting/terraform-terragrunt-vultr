@@ -29,6 +29,10 @@ terraform {
 }
 
 locals {
+  # DNS-01 is configured when the leaf wires in the Route53 IAM key and at
+  # least one zone; with neither the issuer falls back to HTTP-01 only.
+  dns01_enabled = var.dns01_route53_access_key_id != "" && var.dns01_route53_secret_access_key != "" && length(var.dns01_zones) > 0
+
   # The vke module's `endpoint` output is vultr_kubernetes.cluster.endpoint: a
   # bare control-plane hostname (<id>.vultr-k8s.com), not a URL. All three
   # providers want a URL, and the kubeconfig VKE hands out uses :6443, so a bare
@@ -271,13 +275,35 @@ resource "kubectl_manifest" "letsencrypt_issuer" {
         privateKeySecretRef = {
           name = "letsencrypt-prod-account-key"
         }
-        solvers = [{
-          http01 = {
-            ingress = {
-              ingressClassName = "nginx"
+        # DNS-01 through Route53 for the zones we own (selector.dnsZones), HTTP-01
+        # for anything else. DNS-01 is the one that works here: ingress-nginx
+        # requires PROXY protocol on every connection and pods cannot reach the
+        # Vultr LB's public address, so cert-manager's HTTP-01 self-check gets
+        # EOF from the ClusterIP and the Order never leaves Pending (staging,
+        # 2026-09-02). DNS-01 also lets a certificate issue BEFORE a name is cut
+        # over, which the production cutover needs.
+        solvers = concat(
+          local.dns01_enabled ? [{
+            selector = { dnsZones = var.dns01_zones }
+            dns01 = {
+              route53 = {
+                region      = var.dns01_route53_region
+                accessKeyID = var.dns01_route53_access_key_id
+                secretAccessKeySecretRef = {
+                  name = "route53-dns01-credentials"
+                  key  = "secret-access-key"
+                }
+              }
             }
-          }
-        }]
+          }] : [],
+          [{
+            http01 = {
+              ingress = {
+                ingressClassName = "nginx"
+              }
+            }
+          }]
+        )
       }
     }
   })
@@ -285,7 +311,21 @@ resource "kubectl_manifest" "letsencrypt_issuer" {
   server_side_apply = true
   wait              = true
 
-  depends_on = [helm_release.cert_manager]
+  depends_on = [helm_release.cert_manager, kubernetes_secret_v1.route53_dns01]
+}
+
+# IAM user credentials for the Route53 DNS-01 solver (aws-tf-modules-veeps
+# cert-manager-route53). Lives in the cert-manager namespace because the
+# ClusterIssuer's secretRef is resolved there.
+resource "kubernetes_secret_v1" "route53_dns01" {
+  count = local.dns01_enabled ? 1 : 0
+  metadata {
+    name      = "route53-dns01-credentials"
+    namespace = helm_release.cert_manager.namespace
+  }
+  data = {
+    "secret-access-key" = var.dns01_route53_secret_access_key
+  }
 }
 
 # ---------------------------------------------------------------------------
