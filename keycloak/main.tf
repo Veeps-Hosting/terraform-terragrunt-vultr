@@ -188,10 +188,12 @@ locals {
   backup_prefix = var.backup_prefix != "" ? var.backup_prefix : var.hostname
 
   # aws-cli >= 2.23 sends CRC trailers that Ceph-based S3 stores reject;
-  # when_required restores the pre-2.23 behaviour. Region is mandatory for
-  # SigV4 even with --endpoint-url; Vultr ignores its value.
+  # when_required restores the pre-2.23 behaviour (harmless on AWS). Region is
+  # mandatory for SigV4 even with --endpoint-url: on AWS it must match the
+  # bucket's region (ap-southeast-2 for the veeps-kck8s-backups-* buckets);
+  # Vultr ignores its value.
   awscli_env = {
-    AWS_DEFAULT_REGION               = "us-east-1"
+    AWS_DEFAULT_REGION               = var.backup_s3_region
     AWS_EC2_METADATA_DISABLED        = "true"
     AWS_REQUEST_CHECKSUM_CALCULATION = "when_required"
     AWS_RESPONSE_CHECKSUM_VALIDATION = "when_required"

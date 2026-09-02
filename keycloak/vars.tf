@@ -204,8 +204,14 @@ variable "backups_enabled" {
   type    = bool
 }
 variable "backup_s3_hostname" {
-  # object_storage module s3_hostname output, e.g. syd1.vultrobjects.com.
+  # S3 endpoint host. AWS: s3.<region>.amazonaws.com (the s3-backup-bucket
+  # module output); Vultr object storage: e.g. syd1.vultrobjects.com.
   default = ""
+}
+variable "backup_s3_region" {
+  # Region used for SigV4 signing by the CronJobs' aws-cli. Must match the
+  # bucket's region on AWS (ap-southeast-2 today); any value works for Vultr.
+  default = "us-east-1"
 }
 variable "backup_s3_access_key" {
   default   = ""
