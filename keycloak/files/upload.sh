@@ -39,18 +39,23 @@ if ! s3 s3api head-bucket --bucket "${BUCKET}" >/dev/null 2>&1; then
   s3 s3api create-bucket --bucket "${BUCKET}" >/dev/null
 fi
 
-# --- 2. pack a directory artefact (realm export) -----------------------------
+# --- 2. directory artefact (realm export) ------------------------------------
+# amazon/aws-cli has no tar and its python is 2.7 (no tarfile CLI — the first
+# staging run "packed" nothing and exited 0), so the realm export is uploaded
+# as-is: one object per file under a timestamped folder. Restore = download the
+# folder and `kc.sh import --dir` it; nothing to unpack.
+uploaded=0
 if [ -d "${BACKUP_DIR}/realms" ]; then
-  ARCHIVE="${BACKUP_DIR}/${PREFIX}-realms-${STAMP}.tgz"
-  echo "packing ${BACKUP_DIR}/realms -> ${ARCHIVE}"
-  # amazon/aws-cli ships python as "python" (no python3 symlink) and no tar.
-  PY="$(command -v python3 || command -v python)" || { echo "no python in image; cannot pack realms" >&2; exit 1; }
-  ( cd "${BACKUP_DIR}" && "${PY}" -m tarfile -c "${ARCHIVE}" realms )
+  n="$(find "${BACKUP_DIR}/realms" -type f | wc -l)"
+  [ "${n}" -gt 0 ] || { echo "realm export produced no files in ${BACKUP_DIR}/realms" >&2; exit 1; }
+  dest="s3://${BUCKET}/${KEY_PREFIX}${PREFIX}-realms-${STAMP}/"
+  echo "upload ${BACKUP_DIR}/realms/ (${n} files) -> ${dest}"
+  s3 s3 cp --only-show-errors --recursive "${BACKUP_DIR}/realms/" "${dest}"
+  uploaded=$((uploaded + n))
   rm -rf "${BACKUP_DIR}/realms"
 fi
 
 # --- 3. upload ---------------------------------------------------------------
-uploaded=0
 for f in "${BACKUP_DIR}"/*; do
   [ -f "${f}" ] || continue
   [ -s "${f}" ] || { echo "refusing to upload empty file ${f}" >&2; exit 1; }
