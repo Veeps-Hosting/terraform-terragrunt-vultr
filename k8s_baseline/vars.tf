@@ -94,6 +94,15 @@ variable "acme_email" {
     error_message = "acme_email must be set; Let's Encrypt expiry notices go there."
   }
 }
+variable "acme_self_check_hosts" {
+  # Hostnames cert-manager will certify through this ingress (the keycloak
+  # leaf's hostname + extra_hostnames). Each is aliased to the ingress-nginx
+  # ClusterIP inside the cert-manager pod so its HTTP-01 self-check does not
+  # need to hairpin through the Vultr LB's public address (which pods cannot
+  # reach). Empty = no aliases (self-check will hang Pending on VKE).
+  default = []
+  type    = list(string)
+}
 variable "acme_server" {
   # Swap for https://acme-staging-v02.api.letsencrypt.org/directory while
   # rehearsing to stay clear of the production rate limits. The issuer is

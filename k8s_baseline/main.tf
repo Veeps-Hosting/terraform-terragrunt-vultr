@@ -242,6 +242,18 @@ resource "helm_release" "cert_manager" {
       # release uninstall cannot cascade-delete every Certificate in the cluster.
       keep = true
     }
+    # HTTP-01 self-check hairpin (found on the first staging apply, 2026-09-02):
+    # cert-manager GETs http://<host>/.well-known/acme-challenge/<token> itself
+    # before telling Let's Encrypt to try, and pods cannot reach the Vultr LB's
+    # public address from inside the cluster (connect fails instantly), so the
+    # challenge sat Pending while the same URL answered 200 from the internet.
+    # Pinning the hostnames to the ingress-nginx ClusterIP inside the
+    # cert-manager pod makes the self-check take the in-cluster path; ACME's
+    # own validation still comes from outside through the LB.
+    hostAliases = length(var.acme_self_check_hosts) == 0 ? [] : [{
+      ip        = data.kubernetes_service_v1.ingress_nginx.spec[0].cluster_ip
+      hostnames = var.acme_self_check_hosts
+    }]
   })]
 }
 
