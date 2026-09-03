@@ -45,7 +45,13 @@ variable "backup_hour" {
   type    = string
 }
 variable "backup_minute" {
-  default = "00"
+  # "0", NOT "00". Vultr stores and returns the minute unpadded, so a "00"
+  # default drifts on every plan ("0" -> "00"), and that drift is not cosmetic:
+  # the provider then sends backup_minute alone on an update and the API answers
+  # 422 "Backup hour and minute must be set together." — which blocks EVERY
+  # in-place change to the resource, including one that only touches
+  # trusted_ips. Found 2026-09-03 applying the wqmon2 monitoring entry.
+  default = "0"
   type    = string
 }
 variable "vpc_id" {

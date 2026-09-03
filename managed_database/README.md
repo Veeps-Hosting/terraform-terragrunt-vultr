@@ -68,3 +68,13 @@ VPC neighbour cannot sit in the middle.
   the way the compute module protects reserved IPs.
 - Vultr rotates the admin password on request through its API; the provider re-reads it, and
   the keycloak leaf picks the new value up on its next apply.
+
+## `backup_minute` is `"0"`, not `"00"` (5.6+)
+
+Vultr stores the backup minute unpadded and returns `"0"`. A `"00"` default
+therefore drifts on every plan, and the drift is not cosmetic: on an update the
+provider sends `backup_minute` on its own, and the API answers
+`422 Backup hour and minute must be set together.` That blocks **every**
+in-place change to the resource — a `trusted_ips` edit included, which is how it
+was found (2026-09-03). If a future field shows the same "always changing"
+behaviour, check what the API actually returns before assuming it is harmless.
