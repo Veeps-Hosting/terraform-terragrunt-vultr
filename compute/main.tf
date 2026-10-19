@@ -31,7 +31,7 @@ resource "vultr_instance" "server" {
   region                 = var.region
   reserved_ip_id         = local.reserved_ip_id
   script_id              = var.adopt_existing ? null : data.vultr_startup_script.script.id
-  ssh_key_ids            = var.adopt_existing ? null : [data.vultr_ssh_key.key.id]
+  ssh_key_ids            = (var.adopt_existing || !var.attach_ssh_key) ? null : [data.vultr_ssh_key.key[0].id]
   vpc_ids                = var.vpc_ids
 
   lifecycle {
@@ -142,6 +142,7 @@ resource "vultr_reserved_ip" "reserved_ipv6" {
 
 # Find the ID of an existing SSH key.
 data "vultr_ssh_key" "key" {
+  count = var.attach_ssh_key ? 1 : 0
   filter {
     name   = "name"
     values = [var.ssh_key]

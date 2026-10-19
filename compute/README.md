@@ -84,3 +84,13 @@ Converting a live /64 does not change the address and does not reboot the host.
 `adopt_existing = true` leaves `ssh_key_ids` and `script_id` unmanaged so the module can take
 over an instance created outside it. Both are ForceNew, so managing them would rebuild the
 server. Such an instance has no startup script, and a `-replace` on it boots with no bootstrap.
+
+## attach_ssh_key
+
+`attach_ssh_key = false` sends no `ssh_key_ids` and skips the `ssh_key` lookup, while still
+attaching `startup_script`. Use it for Windows images (`os_id = "2514"`), where Vultr SSH keys
+only apply to Linux/FreeBSD. It defaults to `true`, so existing leaves are unchanged. Like
+`ssh_key_ids` itself, changing it on a running instance is ForceNew.
+
+`tofu test` in this directory covers the default, the Windows and the adopted cases with a mock
+provider.

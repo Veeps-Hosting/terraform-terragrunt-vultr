@@ -87,3 +87,7 @@ variable "adopt_existing" {
   default = false
   type    = bool
 }
+variable "attach_ssh_key" {
+  default = true
+  type    = bool
+}
